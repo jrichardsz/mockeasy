@@ -6,7 +6,7 @@ function DefaultController() {
   var xAxisCoodinate;
   var yAxisCoodinate;
   var imageDimension;
-  var desiredRows = 8;
+  var desiredRows = 10;
   var desiredCols = 6;
 
   this.start = () => {
@@ -49,7 +49,7 @@ function DefaultController() {
 
   this.onClick = (e) => {
     var cellPositionInfo = this.computeCurrentCellPosition(e);
-
+    this.drawImageFromUrl("./images/mock-r9c4.png")
   };
 
   this.computeCurrentCellPosition = (e) => {
@@ -66,7 +66,7 @@ function DefaultController() {
     }
 
     var y = 0;
-    if (eventY <= yAxisCoodinate+ imageDimension.height) {
+    if (eventY <= yAxisCoodinate + imageDimension.height) {
       y = eventY;
     } else if (eventY > yAxisCoodinate + imageDimension.height) {
       y = yAxisCoodinate + imageDimension.height;
@@ -77,8 +77,8 @@ function DefaultController() {
     var cellHeigth = Math.round(imageDimension.height / desiredRows);
     var currentRow = -1;
     for (i = 0; i < desiredRows; i++) {
-      if(y> yAxisCoodinate+i*cellHeigth && y< yAxisCoodinate+(i+1)*cellHeigth){
-        currentRow = i+1;
+      if (y > yAxisCoodinate + i * cellHeigth && y < yAxisCoodinate + (i + 1) * cellHeigth) {
+        currentRow = i + 1;
       }
     }
 
@@ -90,12 +90,12 @@ function DefaultController() {
       //100>500+cell width which is false
       //solution
       //100 + 400 >500+cell
-      if(x+xAxisCoodinate> xAxisCoodinate+i*cellWidth && x+xAxisCoodinate < xAxisCoodinate+(i+1)*cellWidth){
-        currentCol = i+1;
+      if (x + xAxisCoodinate > xAxisCoodinate + i * cellWidth && x + xAxisCoodinate < xAxisCoodinate + (i + 1) * cellWidth) {
+        currentCol = i + 1;
       }
     }
 
-    return [x,y, currentRow, currentCol]
+    return [x, y, currentRow, currentCol]
   };
 
   this.showMouseCoordinates = () => {
@@ -103,7 +103,7 @@ function DefaultController() {
     // Getting 'Info' div in js hands
     var info = document.getElementById('info');
 
-    addEventListener('mousemove', (e)=> {
+    addEventListener('mousemove', (e) => {
       var cellPositionInfo = this.computeCurrentCellPosition(e);
       info.innerHTML = `
       Position X : ${cellPositionInfo[0]}  <br/>
@@ -122,6 +122,18 @@ function DefaultController() {
     xAxisCoodinate = Math.round(window.innerWidth / 2 - imageDimension.width / 2);
     yAxisCoodinate = 0;
     canvasContext.drawImage(img, xAxisCoodinate, yAxisCoodinate, imageDimension.width, imageDimension.height);
+  };
+
+  this.drawImageFromUrl = (imageUrl) => {
+    var newImage = new Image();
+    newImage.onload = ()=> {
+      var width = newImage.width;
+      var height = newImage.height;
+      var newImageDimension = helper.calculateAspectRatioFit(width, height, window.innerWidth, window.innerHeight);
+      canvasContext.drawImage(newImage, xAxisCoodinate, yAxisCoodinate, newImageDimension.width, newImageDimension.height);
+    };
+    newImage.src = imageUrl;
+
   };
 
   this.drawSquares = () => {
